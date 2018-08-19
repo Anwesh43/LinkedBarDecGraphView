@@ -10,6 +10,7 @@ import android.graphics.RectF
 import android.view.View
 import android.view.MotionEvent
 import android.content.Context
+import android.graphics.Color
 
 val nodes : Int = 5
 
@@ -76,7 +77,7 @@ class BarDecGraphView(ctx : Context) : View(ctx) {
 
     data class Animator(var view : View, var animated : Boolean = false) {
 
-        fun start(cb : () -> Unit) {
+        fun start() {
             if (!animated) {
                 animated = true
                 view.postInvalidate()
@@ -165,6 +166,28 @@ class BarDecGraphView(ctx : Context) : View(ctx) {
                     dir *= -1
                 }
                 cb(i, scl)
+            }
+        }
+    }
+
+    data class Renderer(var view : BarDecGraphView) {
+
+        private val animator : Animator = Animator(view)
+        private val lbdg : LinkedBarDecGraph = LinkedBarDecGraph(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#BDBDBD"))
+            lbdg.draw(canvas, paint)
+            animator.animate {
+                lbdg.update {i, scl ->
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            lbdg.startUpdating {
+                animator.start()
             }
         }
     }
