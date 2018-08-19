@@ -146,4 +146,26 @@ class BarDecGraphView(ctx : Context) : View(ctx) {
             return this
         }
     }
+
+    data class LinkedBarDecGraph(var i : Int) {
+        private var curr : BarDecGraphNode = BarDecGraphNode(0)
+        private var dir : Int = 1
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            curr.draw(canvas, paint, true)
+        }
+
+        fun startUpdating(cb : () -> Unit) {
+            curr.startUpdating(cb)
+        }
+
+        fun update(cb : (Int, Float) -> Unit) {
+            curr.update {i, scl ->
+                curr = curr.getNext(dir) {
+                    dir *= -1
+                }
+                cb(i, scl)
+            }
+        }
+    }
 }
