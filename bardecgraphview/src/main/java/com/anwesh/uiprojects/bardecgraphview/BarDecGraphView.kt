@@ -4,6 +4,7 @@ package com.anwesh.uiprojects.bardecgraphview
  * Created by anweshmishra on 20/08/18.
  */
 
+import android.app.Activity
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
@@ -191,6 +192,14 @@ class BarDecGraphView(ctx : Context) : View(ctx) {
             lbdg.startUpdating {
                 animator.start()
             }
+        }
+    }
+
+    companion object {
+        fun create(activity : Activity) : BarDecGraphView {
+            val view : BarDecGraphView = BarDecGraphView(activity)
+            activity.setContentView(view)
+            return view
         }
     }
 }
