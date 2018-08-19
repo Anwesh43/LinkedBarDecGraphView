@@ -11,6 +11,7 @@ import android.graphics.RectF
 import android.view.View
 import android.view.MotionEvent
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.graphics.Color
 
 val nodes : Int = 5
@@ -24,7 +25,7 @@ fun Canvas.drawBarDecNode(i : Int, scale : Float, useI : Boolean, cb : () -> Uni
     val sc1 : Float = Math.min(0.5f, scale) * 2
     val sc2 : Float = Math.min(0.5f, Math.max(0f, scale - 0.5f)) * 2
     if (useI) {
-        x = gap * i + gap / 2 + gap * sc2
+        x = gap * i + gap / 2 + gap * sc1
         y = h / 2
     }
     val size : Float = 3 * gap / 4
@@ -35,8 +36,8 @@ fun Canvas.drawBarDecNode(i : Int, scale : Float, useI : Boolean, cb : () -> Uni
     save()
     translate(x, y)
     save()
-    translate(kx, -hBar * (1 - sc1))
-    drawRect(RectF(0f, 0f, wSize, hBar * (1 - sc1)), paint)
+    translate(kx, -hBar * (1 - sc2))
+    drawRect(RectF(0f, 0f, wSize, hBar * (1 - sc2)), paint)
     restore()
     cb()
     restore()
@@ -206,6 +207,7 @@ class BarDecGraphView(ctx : Context) : View(ctx) {
         fun create(activity : Activity) : BarDecGraphView {
             val view : BarDecGraphView = BarDecGraphView(activity)
             activity.setContentView(view)
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             return view
         }
     }
