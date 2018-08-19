@@ -32,7 +32,7 @@ fun Canvas.drawBarDecNode(i : Int, scale : Float, useI : Boolean, cb : () -> Uni
     translate(x, h / 2)
     save()
     translate(kx, -hBar * (1 - sc1))
-    drawRect(RectF(0f, 0f, wSize, hBar * sc1), paint)
+    drawRect(RectF(0f, 0f, wSize, hBar * (1 - sc1)), paint)
     restore()
     restore()
 }
@@ -99,6 +99,51 @@ class BarDecGraphView(ctx : Context) : View(ctx) {
 
                 }
             }
+        }
+    }
+
+    data class BarDecGraphNode(var i : Int, val state : State = State()) {
+
+        private var next : BarDecGraphNode? = null
+        private var prev : BarDecGraphNode? = null
+
+        fun update(cb : (Int, Float) -> Unit) {
+            state.update {
+                cb(i, it)
+            }
+        }
+
+        fun startUpdating(cb : () -> Unit) {
+            state.startUpdating(cb)
+        }
+
+        fun addNeighbor() {
+            if (i < nodes - 1) {
+                next = BarDecGraphNode(i)
+                next?.prev = this
+            }
+        }
+
+        init {
+            addNeighbor()
+        }
+
+        fun draw(canvas : Canvas, paint : Paint, useI : Boolean) {
+            canvas.drawBarDecNode(i, state.scale, useI, {
+                next?.draw(canvas, paint, false)
+            }, paint)
+        }
+
+        fun getNext(dir : Int, cb : () -> Unit) : BarDecGraphNode {
+            var curr : BarDecGraphNode? = prev
+            if (dir == 1) {
+                curr = next
+            }
+            if (curr != null) {
+                return curr
+            }
+            cb()
+            return this
         }
     }
 }
