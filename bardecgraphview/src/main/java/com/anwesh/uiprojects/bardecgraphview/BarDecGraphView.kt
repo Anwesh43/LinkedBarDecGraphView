@@ -20,22 +20,25 @@ fun Canvas.drawBarDecNode(i : Int, scale : Float, useI : Boolean, cb : () -> Uni
     val h : Float = height.toFloat()
     val gap : Float = w / (nodes + 1)
     var x : Float = 0f
+    var y : Float = 0f
     val sc1 : Float = Math.min(0.5f, scale) * 2
     val sc2 : Float = Math.min(0.5f, Math.max(0f, scale - 0.5f)) * 2
     if (useI) {
         x = gap * i + gap / 2 + gap * sc2
+        y = h / 2
     }
-    val size : Float = gap / 2
+    val size : Float = 3 * gap / 4
     val wSize : Float = size / nodes
     val hSize : Float = (h / 3) / nodes
     val kx = -(size)/2 + (wSize) * i
     val hBar : Float = (i + 1) * hSize
     save()
-    translate(x, h / 2)
+    translate(x, y)
     save()
     translate(kx, -hBar * (1 - sc1))
     drawRect(RectF(0f, 0f, wSize, hBar * (1 - sc1)), paint)
     restore()
+    cb()
     restore()
 }
 
@@ -44,6 +47,10 @@ class BarDecGraphView(ctx : Context) : View(ctx) {
     private val paint : Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     private val renderer : Renderer = Renderer(this)
+
+    init {
+        paint.color = Color.parseColor("#4CAF50")
+    }
 
     override fun onDraw(canvas : Canvas) {
         renderer.render(canvas, paint)
@@ -123,7 +130,7 @@ class BarDecGraphView(ctx : Context) : View(ctx) {
 
         fun addNeighbor() {
             if (i < nodes - 1) {
-                next = BarDecGraphNode(i)
+                next = BarDecGraphNode(i + 1)
                 next?.prev = this
             }
         }
