@@ -13,6 +13,30 @@ import android.content.Context
 
 val nodes : Int = 5
 
+fun Canvas.drawBarDecNode(i : Int, scale : Float, useI : Boolean, cb : () -> Unit, paint : Paint) {
+    val w : Float = width.toFloat()
+    val h : Float = height.toFloat()
+    val gap : Float = w / (nodes + 1)
+    var x : Float = 0f
+    val sc1 : Float = Math.min(0.5f, scale) * 2
+    val sc2 : Float = Math.min(0.5f, Math.max(0f, scale - 0.5f)) * 2
+    if (useI) {
+        x = gap * i + gap / 2 + gap * sc2
+    }
+    val size : Float = gap / 2
+    val wSize : Float = size / nodes
+    val hSize : Float = (h / 3) / nodes
+    val kx = -(size)/2 + (wSize) * i
+    val hBar : Float = (i + 1) * hSize
+    save()
+    translate(x, h / 2)
+    save()
+    translate(kx, -hBar * (1 - sc1))
+    drawRect(RectF(0f, 0f, wSize, hBar * sc1), paint)
+    restore()
+    restore()
+}
+
 class BarDecGraphView(ctx : Context) : View(ctx) {
 
     private val paint : Paint = Paint(Paint.ANTI_ALIAS_FLAG)
