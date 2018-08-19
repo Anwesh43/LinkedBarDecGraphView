@@ -15,6 +15,7 @@ import android.content.pm.ActivityInfo
 import android.graphics.Color
 
 val nodes : Int = 5
+val SPEED : Float = 0.05f
 
 fun Canvas.drawBarDecNode(i : Int, scale : Float, useI : Boolean, cb : () -> Unit, paint : Paint) {
     val w : Float = width.toFloat()
@@ -69,7 +70,7 @@ class BarDecGraphView(ctx : Context) : View(ctx) {
     data class State(var scale : Float = 0f, var prevScale : Float = 0f, var dir : Float = 0f) {
 
         fun update(cb : (Float) -> Unit) {
-            this.scale += 0.1f * this.dir
+            this.scale += SPEED * this.dir
             if (Math.abs(this.scale - this.prevScale) > 1) {
                 this.scale = this.prevScale + this.dir
                 this.dir = 0f
